@@ -1,23 +1,28 @@
-import Navbar from "./components/navbar";
+import Link from "next/link";
+
 import { fetchBoards } from "./lib/data";
+import Navbar from "./components/navbar";
 
 export default async function Home() {
     const boards = await fetchBoards();
 
     return (
-        <main className="xl:container m-auto">
+        <>
             <Navbar />
 
-            <div className="grid grid-cols-4 gap-4">
-                {boards?.map((board) => (
-                    <div
-                        className="rounded-md shadow-md p-4 mt-10 bg-slate-300/50"
-                        key={board.id}
-                    >
-                        {board.name}
-                    </div>
-                ))}
-            </div>
-        </main>
+            <main>
+                <div className="grid grid-cols-4 gap-4">
+                    {boards?.map((board) => (
+                        <Link
+                            className="text-center rounded-md shadow-md p-4 mt-10 bg-slate-300/50"
+                            key={board.id}
+                            href={`/board/${board.id}`}
+                        >
+                            {board.name}
+                        </Link>
+                    ))}
+                </div>
+            </main>
+        </>
     );
 }

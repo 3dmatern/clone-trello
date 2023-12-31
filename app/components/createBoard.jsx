@@ -9,26 +9,6 @@ export default function CreateBoard() {
     const [state, dispatch] = useFormState(createBoard, initialState);
 
     const [open, setOpen] = useState(false);
-    // const [nameBoard, setNameBoard] = useState("");
-
-    // const handleChange = ({ target }) => {
-    //     if (target.value !== "") {
-    //         setError(false);
-    //     }
-    //     setNameBoard(target.value);
-    // };
-
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-
-    //     if (nameBoard === "") {
-    //         setError(true);
-    //         return;
-    //     }
-
-    //     setNameBoard("");
-    //     setOpen(false);
-    // };
 
     return (
         <>
@@ -58,8 +38,6 @@ export default function CreateBoard() {
                                 } outline-none focus:outline-fuchsia-500 shadow-2xl`}
                                 type="text"
                                 name="name"
-                                // value={nameBoard}
-                                // onChange={handleChange}
                             />
                             {state?.errors?.name &&
                                 state.errors.name.map((error) => (
@@ -79,14 +57,14 @@ export default function CreateBoard() {
 
                         <div className="flex items-center justify-between gap-4 mt-8">
                             <button
-                                className="bg-transparent p-2 hover:bg-red-700/75 transition-all duration-300"
+                                className="p-2 bg-transparent hover:bg-red-700/75 transition-all duration-300"
                                 type="button"
                                 onClick={() => setOpen(false)}
                             >
                                 Отменить
                             </button>
                             <button
-                                className="bg-slate-300/50 p-2 hover:bg-slate-300/75 hover:scale-110 transition-all duration-300"
+                                className="p-2 bg-slate-300/50 hover:bg-slate-300/75 hover:scale-110 transition-all duration-300"
                                 type="submit"
                             >
                                 Создать

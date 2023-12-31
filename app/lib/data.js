@@ -14,3 +14,46 @@ export async function fetchBoards() {
         throw new Error("Не удалось получить данные о досках.");
     }
 }
+
+export async function fetchBoardById(id) {
+    noStore();
+
+    try {
+        const data = await sql`
+            SELECT * FROM trello_boards
+            WHERE id = ${id}
+        `;
+
+        return data.rows[0];
+    } catch (error) {
+        console.error("Ошибка базы данных:", error);
+        throw new Error("Не удалось получить данные о доске.");
+    }
+}
+
+export async function fetchListsByBoardId(boardId) {
+    noStore();
+
+    try {
+        const data = await sql`
+            SELECT * FROM trello_board_lists
+            WHERE board_id = ${boardId}
+        `;
+        return data.rows[0];
+    } catch (error) {
+        console.error("Ошибка базы данных:", error);
+        throw new Error("Не удалось получить данные о списках доски.");
+    }
+}
+
+export async function fetchAllTodo() {
+    noStore();
+
+    try {
+        const data = await sql`SELECT * FROM trello_todo`;
+        return data.rows[0];
+    } catch (error) {
+        console.error("Ошибка базы данных:", error);
+        throw new Error("Не удалось получить данные о задачах");
+    }
+}

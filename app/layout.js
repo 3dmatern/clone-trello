@@ -1,4 +1,5 @@
 import { Inter } from "next/font/google";
+
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -14,7 +15,7 @@ export default function RootLayout({ children }) {
             <body
                 className={
                     inter.className +
-                    " bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500"
+                    " xl:container m-auto px-4 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500"
                 }
             >
                 {children}
