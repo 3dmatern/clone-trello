@@ -1,30 +1,34 @@
 "use client";
 
 import { useState } from "react";
+import { useFormState } from "react-dom";
+import { createBoard } from "@/app/lib/actions";
 
 export default function CreateBoard() {
+    const initialState = { message: null, errors: {} };
+    const [state, dispatch] = useFormState(createBoard, initialState);
+
     const [open, setOpen] = useState(false);
-    const [nameBoard, setNameBoard] = useState("");
-    const [error, setError] = useState(false);
+    // const [nameBoard, setNameBoard] = useState("");
 
-    const handleChange = ({ target }) => {
-        if (target.value !== "") {
-            setError(false);
-        }
-        setNameBoard(target.value);
-    };
+    // const handleChange = ({ target }) => {
+    //     if (target.value !== "") {
+    //         setError(false);
+    //     }
+    //     setNameBoard(target.value);
+    // };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
 
-        if (nameBoard === "") {
-            setError(true);
-            return;
-        }
+    //     if (nameBoard === "") {
+    //         setError(true);
+    //         return;
+    //     }
 
-        setNameBoard("");
-        setOpen(false);
-    };
+    //     setNameBoard("");
+    //     setOpen(false);
+    // };
 
     return (
         <>
@@ -39,26 +43,38 @@ export default function CreateBoard() {
 
             {open && (
                 <div className="fixed inset-0 z-10 w-screen h-screen flex items-center justify-center bg-slate-300/50">
-                    <form className="py-20 px-20 rounded-lg text-center bg-gradient-to-r to-emerald-500 to-90% via-sky-500 via-30% from-indigo-500 from-10%">
+                    <form
+                        action={dispatch}
+                        className="py-20 px-20 rounded-lg text-center bg-gradient-to-r to-emerald-500 to-90% via-sky-500 via-30% from-indigo-500 from-10%"
+                    >
                         <label>
                             <h5 className="text-2xl mb-8">
                                 Как назовем доску?
                             </h5>
                             <input
                                 className={`block m-auto rounded-sm p-2 text-fuchsia-500 ${
-                                    error && "outline-red-600"
+                                    state.errors?.name && "outline-red-600"
                                 } outline-none focus:outline-fuchsia-500 shadow-2xl`}
                                 type="text"
                                 name="name"
-                                value={nameBoard}
-                                onChange={handleChange}
+                                // value={nameBoard}
+                                // onChange={handleChange}
                             />
-                            {error && (
-                                <p className="mt-4">
-                                    Упс! Похоже, ты забыл ввести имя!
-                                </p>
-                            )}
+                            {state.errors?.name &&
+                                state.errors.name.map((error) => (
+                                    <p className="mt-4" key={error}>
+                                        {error}
+                                    </p>
+                                ))}
                         </label>
+
+                        <div className="mt-4">
+                            {state.message ? (
+                                <p className=" text-sm text-red-500">
+                                    {state.message}
+                                </p>
+                            ) : null}
+                        </div>
 
                         <div className="flex items-center justify-between gap-4 mt-8">
                             <button
@@ -70,8 +86,8 @@ export default function CreateBoard() {
                             </button>
                             <button
                                 className="bg-slate-300/50 p-2 hover:bg-slate-300/75 hover:scale-110 transition-all duration-300"
-                                type="button"
-                                onClick={handleSubmit}
+                                type="submit"
+                                // onClick={handleSubmit}
                             >
                                 Создать
                             </button>
