@@ -2,6 +2,7 @@
 
 import { sql } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 
 const FormSchemaBoard = z.object({
@@ -46,6 +47,7 @@ export async function createBoard(prevState, formData) {
 
     // Повторно проверить кеш страницы досок и перенаправить пользователя.
     revalidatePath("/");
+    redirect("/");
 }
 
 export async function updateBoard(id, prevState, formData) {

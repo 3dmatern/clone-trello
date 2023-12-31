@@ -45,6 +45,7 @@ export default function CreateBoard() {
                 <div className="fixed inset-0 z-10 w-screen h-screen flex items-center justify-center bg-slate-300/50">
                     <form
                         action={dispatch}
+                        onSubmit={state?.message ? null : () => setOpen(false)}
                         className="py-20 px-20 rounded-lg text-center bg-gradient-to-r to-emerald-500 to-90% via-sky-500 via-30% from-indigo-500 from-10%"
                     >
                         <label>
@@ -87,7 +88,6 @@ export default function CreateBoard() {
                             <button
                                 className="bg-slate-300/50 p-2 hover:bg-slate-300/75 hover:scale-110 transition-all duration-300"
                                 type="submit"
-                                // onClick={handleSubmit}
                             >
                                 Создать
                             </button>
