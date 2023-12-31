@@ -53,14 +53,14 @@ export default function CreateBoard() {
                             </h5>
                             <input
                                 className={`block m-auto rounded-sm p-2 text-fuchsia-500 ${
-                                    state.errors?.name && "outline-red-600"
+                                    state?.errors?.name && "outline-red-600"
                                 } outline-none focus:outline-fuchsia-500 shadow-2xl`}
                                 type="text"
                                 name="name"
                                 // value={nameBoard}
                                 // onChange={handleChange}
                             />
-                            {state.errors?.name &&
+                            {state?.errors?.name &&
                                 state.errors.name.map((error) => (
                                     <p className="mt-4" key={error}>
                                         {error}
@@ -69,7 +69,7 @@ export default function CreateBoard() {
                         </label>
 
                         <div className="mt-4">
-                            {state.message ? (
+                            {state?.message ? (
                                 <p className=" text-sm text-red-500">
                                     {state.message}
                                 </p>

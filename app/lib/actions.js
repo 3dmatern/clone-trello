@@ -2,7 +2,6 @@
 
 import { sql } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/dist/server/api-utils";
 import { z } from "zod";
 
 const FormSchemaBoard = z.object({
@@ -12,24 +11,25 @@ const FormSchemaBoard = z.object({
     }),
 });
 
-const CreateBoard = FormSchemaBoard.omit({ id: true, name: true });
-const UpdateBoard = FormSchemaBoard.omit({ name: true, id: true });
+const CreateBoard = FormSchemaBoard.omit({ id: true });
+const UpdateBoard = FormSchemaBoard.omit({ id: true });
 
 export async function createBoard(prevState, formData) {
-    const validateFields = CreateBoard.safeParse({
+    const validatedFields = CreateBoard.safeParse({
         name: formData.get("name"),
     });
+    console.log(validatedFields.data);
 
     // Если проверка формы не удалась, верните ошибки раньше. В противном случае продолжайте.
-    if (!validateFields.success) {
+    if (!validatedFields.success) {
         return {
-            errors: validateFields.error.flatten().fieldErrors,
+            errors: validatedFields.error.flatten().fieldErrors,
             message: "Недостающие поля. Не удалось создать доску.",
         };
     }
 
     // Подготавливаем данные для вставки в базу данных
-    const { name } = validateFields.data;
+    const { name } = validatedFields.data;
 
     // Вставляем данные в базу данных
     try {
@@ -46,22 +46,21 @@ export async function createBoard(prevState, formData) {
 
     // Повторно проверить кеш страницы досок и перенаправить пользователя.
     revalidatePath("/");
-    redirect("/");
 }
 
 export async function updateBoard(id, prevState, formData) {
-    const validateFields = UpdateBoard.safeParse({
+    const validatedFields = UpdateBoard.safeParse({
         name: formData.get("name"),
     });
 
-    if (!validateFields.success) {
+    if (!validatedFields.success) {
         return {
-            errors: validateFields.error.flatten().fieldErrors,
+            errors: validatedFields.error.flatten().fieldErrors,
             message: "Недостоющие поля. Не удалось обновить доску.",
         };
     }
 
-    const { name } = validateFields.data;
+    const { name } = validatedFields.data;
 
     try {
         await sql`
@@ -74,7 +73,6 @@ export async function updateBoard(id, prevState, formData) {
     }
 
     revalidatePath("/");
-    redirect("/");
 }
 
 export async function deleteBoard(id) {
