@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import CreateBoard from "./createBoard";
 
 export default function Navbar() {
     return (
@@ -10,9 +11,7 @@ export default function Navbar() {
 
             <h1 className="text-center text-2xl">Clone Trello</h1>
 
-            <button className="rounded-md bg-slate-300/75 hover:bg-slate-300 p-1 text-2xl size-10">
-                +
-            </button>
+            <CreateBoard />
         </nav>
     );
 }

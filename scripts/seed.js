@@ -1,4 +1,4 @@
-import { db } from "@vercel/postgres";
+const { db } = require("@vercel/postgres");
 
 async function seedTrelloBoards(client) {
     try {

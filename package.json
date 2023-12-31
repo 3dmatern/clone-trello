@@ -9,7 +9,6 @@
         "lint": "next lint",
         "seed": "node -r dotenv/config ./scripts/seed.js"
     },
-    "type": "module",
     "dependencies": {
         "@vercel/postgres": "^0.5.1",
         "next": "14.0.4",
