@@ -11,7 +11,7 @@ export default async function Home() {
             <div className="grid grid-cols-4 gap-4">
                 {boards?.map((board) => (
                     <div
-                        className="rounded-md shadow-md p-4 bg-slate-300/50"
+                        className="rounded-md shadow-md p-4 mt-10 bg-slate-300/50"
                         key={board.id}
                     >
                         {board.name}
