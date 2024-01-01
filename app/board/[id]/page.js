@@ -21,7 +21,6 @@ export default async function Page({ params }) {
         fetchListsByBoardId(id),
         fetchTodoByBoardId(id),
     ]);
-    console.log(lists);
 
     if (!board) {
         notFound();
