@@ -231,3 +231,29 @@ export async function updateTodoStatus(payload) {
     }
     revalidatePath(`/board/${payload.boardId}`);
 }
+
+export async function updateTodoListId(payload) {
+    console.log(payload);
+    if (!payload) {
+        return {
+            errors: { status: ["Вы не выбрали лист"] },
+            message: "Недостоющие поля. Не удалось обновить задачу",
+        };
+    }
+
+    const { id, boardId, listId, status } = payload;
+
+    try {
+        await sql`
+            UPDATE trello_todo
+            SET list_id = ${listId}, status = ${status}
+            WHERE id = ${id}
+        `;
+    } catch (error) {
+        console.error(error);
+        return {
+            message: "Ошибка базы данных. Не удалось обновить задачу",
+        };
+    }
+    revalidatePath(`/board/${boardId}`);
+}
