@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { fetchBoards } from "./lib/data";
+
 import Navbar from "./components/navbar";
 
 export default async function Home() {

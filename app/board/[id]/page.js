@@ -6,6 +6,7 @@ import {
     fetchListsByBoardId,
     fetchTodoByBoardId,
 } from "@/app/lib/data";
+
 import AddList from "./addList";
 import List from "@/app/ui/board/list/list";
 
