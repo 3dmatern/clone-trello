@@ -22,7 +22,7 @@ export default function Form({ boardId }) {
                 />
                 {state?.errors?.name &&
                     state.errors.name.map((error) => (
-                        <p key={error} className="mt-4 text-red-600">
+                        <p key={error} className="mt-4 text-sm text-red-600">
                             {error}
                         </p>
                     ))}

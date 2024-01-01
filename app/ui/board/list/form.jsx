@@ -31,7 +31,7 @@ export default function Form({ boardId, listId }) {
 
             {state?.errors?.text &&
                 state.errors.text.map((error) => (
-                    <p key={error} className="mt-2 text-red-600">
+                    <p key={error} className="mt-2 text-sm text-red-600">
                         {error}
                     </p>
                 ))}

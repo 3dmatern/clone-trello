@@ -1,11 +1,16 @@
 "use client";
 
 import React from "react";
-import Form from "./form";
 import Image from "next/image";
 
+import { updateTodoStatus } from "@/app/lib/actions";
+
+import Form from "./form";
+
 export default function List({ lists, todos, boardId }) {
-    console.log(todos);
+    const handleUpdateTodoStatus = async (todo) => {
+        await updateTodoStatus(todo);
+    };
 
     return lists?.map((list) => (
         <div
@@ -29,7 +34,15 @@ export default function List({ lists, todos, boardId }) {
                                 } rounded-md mb-2`}
                             >
                                 <p>{todo.text}</p>
-                                <button type="button">
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        handleUpdateTodoStatus({
+                                            ...todo,
+                                            status: !todo.status,
+                                        })
+                                    }
+                                >
                                     {todo.status ? (
                                         <Image
                                             src="/doneAll.svg"

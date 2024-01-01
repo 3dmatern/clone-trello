@@ -37,7 +37,7 @@ const CreateTodo = FormSchemaTodo.omit({
     date: true,
     status: true,
 });
-const UpdateTodo = FormSchemaTodo.omit({ id: true, date: true, status: true });
+const UpdateTodo = FormSchemaTodo.omit({ id: true, date: true });
 
 export async function createBoard(prevState, formData) {
     const validatedFields = CreateBoard.safeParse({
@@ -191,4 +191,43 @@ export async function createTodo(prevState, formData) {
     }
 
     revalidatePath(`/board/${boardId}`);
+}
+
+export async function updateTodoStatus(payload) {
+    const validatedFields = UpdateTodo.safeParse({
+        text: payload.text,
+        boardId: payload.board_id,
+        listId: payload.list_id,
+        status: payload.status,
+    });
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: "Недостоющие поля, не удалось обновить задачу",
+        };
+    }
+
+    const { status } = validatedFields.data;
+
+    if (typeof status !== "boolean") {
+        return {
+            errors: { status: ["Вы не выбрали задачу"] },
+            message: "Недостоющие поля. Не удалось обновить задачу",
+        };
+    }
+
+    try {
+        await sql`
+            UPDATE trello_todo
+            SET status = ${status}
+            WHERE id = ${payload.id}
+        `;
+    } catch (error) {
+        console.error(error);
+        return {
+            message: "Ошибка базы данных. Не удалось обновить задачу",
+        };
+    }
+    revalidatePath(`/board/${payload.boardId}`);
 }
