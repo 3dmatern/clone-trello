@@ -50,6 +50,7 @@ async function seedTrelloTodo(client) {
         const createTable = await client.sql`
             CREATE TABLE IF NOT EXISTS trello_todo (
                 id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+                board_id UUID NOT NULL,
                 list_id UUID NOT NULL,
                 text VARCHAR(255) NOT NULL,
                 status BOOLEAN DEFAULT false NOT NULL,

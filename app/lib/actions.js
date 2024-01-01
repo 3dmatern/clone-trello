@@ -7,19 +7,42 @@ import { z } from "zod";
 
 const FormSchemaBoard = z.object({
     id: z.string(),
-    name: z.string({
-        invalid_type_error: "Пожалуйста введите имя",
-    }),
+    name: z.string(),
 });
 
 const CreateBoard = FormSchemaBoard.omit({ id: true });
 const UpdateBoard = FormSchemaBoard.omit({ id: true });
 
+const FormSchemaBoardList = z.object({
+    id: z.string(),
+    boardId: z.string(),
+    name: z.string(),
+    date: z.string(),
+});
+
+const CreateBoardList = FormSchemaBoardList.omit({ id: true, date: true });
+const UpdateBoardList = FormSchemaBoardList.omit({ id: true, date: true });
+
+const FormSchemaTodo = z.object({
+    id: z.string(),
+    boardId: z.string(),
+    listId: z.string(),
+    text: z.string(),
+    status: z.boolean(),
+    date: z.string(),
+});
+
+const CreateTodo = FormSchemaTodo.omit({
+    id: true,
+    date: true,
+    status: true,
+});
+const UpdateTodo = FormSchemaTodo.omit({ id: true, date: true, status: true });
+
 export async function createBoard(prevState, formData) {
     const validatedFields = CreateBoard.safeParse({
         name: formData.get("name"),
     });
-    console.log(validatedFields.data);
 
     // Если проверка формы не удалась, верните ошибки раньше. В противном случае продолжайте.
     if (!validatedFields.success) {
@@ -39,6 +62,7 @@ export async function createBoard(prevState, formData) {
             VALUES (${name})
         `;
     } catch (error) {
+        console.error(error);
         // Если возникает ошибка базы данных, возвращаем более конкретную ошибку.
         return {
             message: "Ошибка базы данных: не удалось создать доску.",
@@ -88,4 +112,83 @@ export async function deleteBoard(id) {
     } catch (error) {
         return { message: "Ошибка базы данных: Не удалось удалить доску." };
     }
+}
+
+export async function createBoardList(prevState, formData) {
+    const validatedFields = CreateBoardList.safeParse({
+        name: formData.get("name"),
+        boardId: formData.get("boardId"),
+    });
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: "Недостоющие поля. Не удалось создать лист для задач",
+        };
+    }
+
+    // Подготавливаем данные для вставки в базу данных
+    const { name, boardId } = validatedFields.data;
+    const date = new Date().toISOString().split("T")[0];
+
+    if (!name) {
+        return {
+            errors: { name: ["Вы забыли ввести название"] },
+            message: "Недостоющие поля. Не удалось создать лист для задач",
+        };
+    }
+
+    try {
+        await sql`
+            INSERT INTO trello_board_lists (board_id, name, date)
+            VALUES (${boardId}, ${name}, ${date})
+        `;
+    } catch (error) {
+        console.error(error);
+        return {
+            message: "Ошибка базы данных. Не удалось создать лист для задач",
+        };
+    }
+
+    revalidatePath(`/board/${boardId}`);
+}
+
+export async function createTodo(prevState, formData) {
+    const validatedFields = CreateTodo.safeParse({
+        text: formData.get("text"),
+        boardId: formData.get("boardId"),
+        listId: formData.get("listId"),
+    });
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: "Недостоющие поля. Не удалось создать задачу",
+        };
+    }
+
+    const { text, boardId, listId } = validatedFields.data;
+    const date = new Date().toISOString().split("T")[0];
+    const status = false;
+
+    if (!text) {
+        return {
+            errors: { text: ["Вы забыли ввести задачу"] },
+            message: "Недостоющие поля. Не удалось создать задачу",
+        };
+    }
+
+    try {
+        await sql`
+            INSERT INTO trello_todo (board_id, list_id, text, status, date)
+            VALUES (${boardId}, ${listId}, ${text}, ${status}, ${date})
+        `;
+    } catch (error) {
+        console.error(error);
+        return {
+            message: "Ошибка базы данных. Не удалось создать задачу",
+        };
+    }
+
+    revalidatePath(`/board/${boardId}`);
 }

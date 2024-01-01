@@ -39,19 +39,24 @@ export async function fetchListsByBoardId(boardId) {
             SELECT * FROM trello_board_lists
             WHERE board_id = ${boardId}
         `;
-        return data.rows[0];
+
+        return data.rows;
     } catch (error) {
         console.error("Ошибка базы данных:", error);
         throw new Error("Не удалось получить данные о списках доски.");
     }
 }
 
-export async function fetchAllTodo() {
+export async function fetchTodoByBoardId(boardId) {
     noStore();
 
     try {
-        const data = await sql`SELECT * FROM trello_todo`;
-        return data.rows[0];
+        const data = await sql`
+        SELECT * FROM trello_todo
+        WHERE board_id = ${boardId}
+        `;
+
+        return data.rows;
     } catch (error) {
         console.error("Ошибка базы данных:", error);
         throw new Error("Не удалось получить данные о задачах");
