@@ -13,6 +13,6 @@ export default function AddList({ boardId }) {
             Add list
         </Button>
     ) : (
-        <Form boardId={boardId} />
+        <Form boardId={boardId} setOpen={setOpen} />
     );
 }

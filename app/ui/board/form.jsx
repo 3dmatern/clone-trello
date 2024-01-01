@@ -3,7 +3,7 @@ import { useFormState } from "react-dom";
 
 import { createBoardList } from "@/app/lib/actions";
 
-export default function Form({ boardId }) {
+export default function Form({ boardId, setOpen }) {
     const initialState = { message: null, errors: {} };
     const [state, dispatch] = useFormState(createBoardList, initialState);
 
@@ -43,7 +43,7 @@ export default function Form({ boardId }) {
                     Отменить
                 </button>
                 <button
-                    className="p-2 bg-green-300/50 hover:bg-green-300 hover:scale-105 transition-all duration-300"
+                    className="p-2 bg-green-400 hover:scale-105 transition-all duration-300"
                     type="submit"
                 >
                     Создать

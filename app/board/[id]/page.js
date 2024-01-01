@@ -32,11 +32,11 @@ export default async function Page({ params }) {
                 {"<"} Go back
             </Link>
 
-            <h1 className="text-xl text-center p-3 bg-slate-300/50 w-3/12 rounded-md mx-auto my-5">
+            <h1 className="text-xl text-center p-3 bg-slate-300/50 lg:w-3/12 md:w-max rounded-md mx-auto my-5">
                 {board.name}
             </h1>
 
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid lg:grid-cols-4 gap-4 md:grid-cols-2">
                 <List lists={lists} todos={todos} boardId={id} />
                 <div>
                     <AddList boardId={id} />

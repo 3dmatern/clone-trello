@@ -1,17 +1,21 @@
 import { useFormState } from "react-dom";
 
 import { createTodo } from "@/app/lib/actions";
+import { useState } from "react";
 
 export default function Form({ boardId, listId }) {
     const initialState = { message: null, errors: {} };
     const [state, dispatch] = useFormState(createTodo, initialState);
+    const [text, setText] = useState("");
 
     return (
-        <form action={dispatch} className="my-3">
+        <form action={dispatch} onSubmit={() => setText("")} className="my-3">
             <div className="relative">
                 <input
                     type="text"
                     name="text"
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
                     placeholder="Введите задачу"
                     className="w-full rounded-sm p-1 px-2 pr-7 shadow-md bg-slate-300/50 outline-none hover:outline-gray-400"
                 />

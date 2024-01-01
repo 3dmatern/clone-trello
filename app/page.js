@@ -11,7 +11,7 @@ export default async function Home() {
             <Navbar />
 
             <main>
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid lg:grid-cols-4 gap-4 md:grid-cols-2">
                     {boards?.map((board) => (
                         <Link
                             className="text-center rounded-md shadow-md p-4 mt-10 bg-slate-300/50"
