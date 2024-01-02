@@ -10,8 +10,8 @@ import Form from "./form";
 export default function List({ lists, todos, boardId }) {
     const [draggedItem, setDraggedItem] = useState(null);
 
-    const handleUpdateTodoStatus = async (todo) => {
-        await updateTodoStatus(todo);
+    const handleUpdateTodoStatus = async (payload) => {
+        await updateTodoStatus(payload);
     };
 
     // drag-and-drop
@@ -107,7 +107,15 @@ export default function List({ lists, todos, boardId }) {
                                     type="button"
                                     onClick={() =>
                                         handleUpdateTodoStatus({
-                                            ...todo,
+                                            id: todo.id,
+                                            boardId: todo.board_id,
+                                            status: !todo.status,
+                                        })
+                                    }
+                                    onTouchEnd={() =>
+                                        handleUpdateTodoStatus({
+                                            id: todo.id,
+                                            boardId: todo.board_id,
                                             status: !todo.status,
                                         })
                                     }

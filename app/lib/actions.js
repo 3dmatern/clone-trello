@@ -194,34 +194,20 @@ export async function createTodo(prevState, formData) {
 }
 
 export async function updateTodoStatus(payload) {
-    const validatedFields = UpdateTodo.safeParse({
-        text: payload.text,
-        boardId: payload.board_id,
-        listId: payload.list_id,
-        status: payload.status,
-    });
-
-    if (!validatedFields.success) {
-        return {
-            errors: validatedFields.error.flatten().fieldErrors,
-            message: "Недостоющие поля, не удалось обновить задачу",
-        };
-    }
-
-    const { status } = validatedFields.data;
-
-    if (typeof status !== "boolean") {
+    if (!payload) {
         return {
             errors: { status: ["Вы не выбрали задачу"] },
             message: "Недостоющие поля. Не удалось обновить задачу",
         };
     }
 
+    const { id, boardId, status } = payload;
+
     try {
         await sql`
             UPDATE trello_todo
             SET status = ${status}
-            WHERE id = ${payload.id}
+            WHERE id = ${id}
         `;
     } catch (error) {
         console.error(error);
@@ -229,7 +215,7 @@ export async function updateTodoStatus(payload) {
             message: "Ошибка базы данных. Не удалось обновить задачу",
         };
     }
-    revalidatePath(`/board/${payload.boardId}`);
+    revalidatePath(`/board/${boardId}`);
 }
 
 export async function updateTodoListId(payload) {
