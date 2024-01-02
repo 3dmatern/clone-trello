@@ -16,7 +16,7 @@ export default function Navbar() {
                 />
             </Link>
 
-            <h1 className="text-center text-2xl">Clone Trello</h1>
+            <h1 className="text-center text-2xl">Drag and Drop</h1>
 
             <CreateBoard />
         </nav>
