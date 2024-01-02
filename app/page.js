@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { fetchBoards } from "./lib/data";
 
-import Navbar from "./components/navbar";
+import Navbar from "./ui/board/navbar";
 
 export default async function Home() {
     const boards = await fetchBoards();
