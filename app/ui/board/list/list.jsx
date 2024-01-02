@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 
 import { updateTodoListId, updateTodoStatus } from "@/app/lib/actions";
@@ -8,31 +8,67 @@ import { updateTodoListId, updateTodoStatus } from "@/app/lib/actions";
 import Form from "./form";
 
 export default function List({ lists, todos, boardId }) {
+    const [draggedItem, setDraggedItem] = useState(null);
+
     const handleUpdateTodoStatus = async (todo) => {
         await updateTodoStatus(todo);
     };
 
     // drag-and-drop
     // Функция перетаскиваемого элемента
-    const handleDragStart = (e) => {
-        // Добавить id целевого элемента в объект передачи данных
-        e.dataTransfer.setData("todoId", e.target.id);
+    const handleDragStart = (e, item) => {
+        setDraggedItem(item);
         e.dataTransfer.effectAllowed = "move";
+        // Добавляем данные в объект события для использования в touchend
+        e.dataTransfer.setData("text/plain", item);
+    };
+    // Функция перетаскивания для сенсорных устройств
+    const handleTouchStart = (e, item) => {
+        setDraggedItem(item);
+
+        // Сохраняем координаты касания
+        e.dataTransfer.setData(
+            "touchCoords",
+            JSON.stringify({ x: e.touches[0].clientX, y: e.touches[0].clientY })
+        );
     };
 
     // Функция зоны сброса
     const handleDragOver = (e) => {
         e.preventDefault();
-        // e.dataTransfer.dropEffect = "move";
     };
     // Функция сброса
-    const handleDrop = async (e, boardId, listId) => {
+    const handleDrop = (e, listId) => {
         e.preventDefault();
-        // Получить id цели и добавить перемещенный элемент в его DOM
-        const todoId = e.dataTransfer.getData("todoId");
-        const todo = document.getElementById(todoId);
-        e.target.appendChild(todo);
-        await updateTodoListId({ id: todoId, boardId, listId, status: false });
+
+        updateTodoListId({
+            id: draggedItem.id,
+            boardId: draggedItem.board_id,
+            listId,
+            status: false,
+        });
+        setDraggedItem(null);
+    };
+    // Функция сброса для сенсорных устройств
+    const handleTouchEnd = (e, listId) => {
+        e.preventDefault();
+
+        // Получаем координаты касания
+        const touchCoords = JSON.parse(e.dataTransfer.getData("touchCoords"));
+
+        // Проверяем, что перемещение было достаточным для считывания как перетаскивание
+        if (
+            Math.abs(e.changedTouches[0].clientX - touchCoords.x) > 10 ||
+            Math.abs(e.changedTouches[0].clientY - touchCoords.y) > 10
+        ) {
+            updateTodoListId({
+                id: draggedItem.id,
+                boardId: draggedItem.board_id,
+                listId,
+                status: false,
+            });
+        }
+        setDraggedItem(null);
     };
 
     return lists?.map((list) => (
@@ -48,7 +84,8 @@ export default function List({ lists, todos, boardId }) {
 
             <ul
                 id={list.id}
-                onDrop={(e) => handleDrop(e, boardId, list.id)}
+                onDrop={(e) => handleDrop(e, list.id)}
+                onTouchEnd={(e) => handleTouchEnd(e, list.id)}
                 onDragOver={handleDragOver}
                 className="mt-4 w-full h-full"
             >
@@ -59,7 +96,8 @@ export default function List({ lists, todos, boardId }) {
                                 key={todo.id}
                                 id={todo.id}
                                 draggable
-                                onDragStart={handleDragStart}
+                                onDragStart={(e) => handleDragStart(e, todo)}
+                                onTouchStart={(e) => handleTouchStart(e, todo)}
                                 className={`flex items-center justify-between font-semibold p-2 shadow-lg ${
                                     todo.status ? "bg-gray-300" : "bg-green-300"
                                 } rounded-md mb-2 cursor-pointer`}

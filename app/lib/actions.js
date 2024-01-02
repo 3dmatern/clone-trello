@@ -233,7 +233,6 @@ export async function updateTodoStatus(payload) {
 }
 
 export async function updateTodoListId(payload) {
-    console.log(payload);
     if (!payload) {
         return {
             errors: { status: ["Вы не выбрали лист"] },
