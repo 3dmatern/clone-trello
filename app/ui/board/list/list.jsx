@@ -102,7 +102,7 @@ export default function List({ lists, todos, boardId }) {
                                     todo.status ? "bg-gray-300" : "bg-green-300"
                                 } rounded-md mb-2 cursor-pointer`}
                             >
-                                <p>{todo.text}</p>
+                                <p className="w-11/12">{todo.text}</p>
                                 <button
                                     type="button"
                                     onClick={() =>
@@ -111,6 +111,7 @@ export default function List({ lists, todos, boardId }) {
                                             status: !todo.status,
                                         })
                                     }
+                                    className="size-6"
                                 >
                                     {todo.status ? (
                                         <Image
